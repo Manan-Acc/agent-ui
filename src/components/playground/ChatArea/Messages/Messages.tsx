@@ -11,6 +11,7 @@ import {
   Reference
 } from '@/types/playground'
 import React, { type FC } from 'react'
+import { useState, useEffect } from 'react'
 import ChatBlankState from './ChatBlankState'
 import Icon from '@/components/ui/icon'
 
@@ -59,6 +60,14 @@ const References: FC<ReferenceProps> = ({ references }) => (
 )
 
 const AgentMessageWrapper = ({ message }: MessageWrapperProps) => {
+  // console.log('AgentMessageWrapper', message.tool_calls)
+  const [selectedToolIndex, setSelectedToolIndex] = useState<number | null>(null);
+  useEffect(() => {
+    setSelectedToolIndex(null);
+  }, [message]);
+  const handleToolClick = (index: number) => {
+    setSelectedToolIndex(prevIndex => (prevIndex === index ? null : index));
+  };
   return (
     <div className="flex flex-col gap-y-9">
       {message.extra_data?.reasoning_steps &&
@@ -93,32 +102,64 @@ const AgentMessageWrapper = ({ message }: MessageWrapperProps) => {
           </div>
         )}
       {message.tool_calls && message.tool_calls.length > 0 && (
-        <div className="flex items-center gap-3">
-          <Tooltip
-            delayDuration={0}
-            content={<p className="text-accent">Tool Calls</p>}
-            side="top"
-          >
-            <Icon
-              type="hammer"
-              className="rounded-lg bg-background-secondary p-1"
-              size="sm"
-              color="secondary"
-            />
-          </Tooltip>
+        <div>
+    {/* Row: hammer icon + tool chips */}
+    <div className="flex items-center gap-3 w-full">
+      <Tooltip
+        delayDuration={0}
+        content={<p className="text-accent">Tool Calls</p>}
+        side="top"
+      >
+        <Icon
+          type="hammer"
+          className="rounded-lg bg-background-secondary p-1"
+          size="sm"
+          color="secondary"
+        />
+      </Tooltip>
+      <div className="flex flex-wrap gap-2 rounded-md flex-1">
+        {message.tool_calls.map((toolCall, index) => (
+          <ToolComponent
+            key={toolCall.tool_call_id || `${toolCall.tool_name}-${toolCall.created_at}-${index}`}
+            tools={toolCall}
+            onClick={() => handleToolClick(index)}
+          />
+        ))}
+      </div>
+    </div>
+    {/* Row: tool arguments, aligned with tool chips */}
+    {selectedToolIndex !== null &&
+      message.tool_calls[selectedToolIndex] &&
+      message.tool_calls[selectedToolIndex].tool_args && (
+        <div className="flex w-full">
+          {/* Empty space for icon and gap */}
+          <div style={{ width: 40 /* icon size + gap, adjust as needed */ }} />
+          <div className="mt-2 rounded bg-background-secondary p-2 text-xs text-primary flex-1">
+            {Object.entries(message.tool_calls[selectedToolIndex].tool_args).map(([arg, value], i) => {
+              // Map argument keys to display names
+              const argDisplayMap: Record<string, string> = {
+                member_id: 'Agent Name',
+                task_description: 'Task Description',
+                expected_output: 'Expected Output',
+              };
+              // Use mapped name or prettify the key
+              const displayArg = argDisplayMap[arg] || arg.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 
-          <div className="flex flex-wrap gap-2">
-            {message.tool_calls.map((toolCall, index) => (
-              <ToolComponent
-                key={
-                  toolCall.tool_call_id ||
-                  `${toolCall.tool_name}-${toolCall.created_at}-${index}`
-                }
-                tools={toolCall}
-              />
-            ))}
+              // Format value (optional: prettify objects/arrays)
+              const displayValue = typeof value === "object" && value !== null
+                ? JSON.stringify(value)
+                : String(value);
+
+              return (
+                <div key={`${selectedToolIndex}-${arg}-${String(value)}-${i}`}>
+                  <strong><span className="text-green-500">{displayArg}: </span></strong> {displayValue}
+                </div>
+              );
+            })}
           </div>
         </div>
+    )}
+  </div>
       )}
       <AgentMessage message={message} />
     </div>
@@ -144,12 +185,17 @@ const Reasonings: FC<ReasoningProps> = ({ reasoning }) => (
   </div>
 )
 
-const ToolComponent = memo(({ tools }: ToolCallProps) => (
-  <div className="cursor-default rounded-full bg-accent px-2 py-1.5 text-xs">
-    <p className="font-dmmono uppercase text-primary/80">{tools.tool_name}</p>
-  </div>
-))
-ToolComponent.displayName = 'ToolComponent'
+const ToolComponent = memo(
+  ({ tools, onClick }: ToolCallProps & { onClick?: () => void }) => (
+    <div
+      className="cursor-pointer rounded-md bg-accent px-2 py-1.5 text-xs"
+      onClick={onClick}
+    >
+      <p className="font-dmmono uppercase text-primary/80">{tools.tool_args.member_id}</p>
+    </div>
+  )
+);
+ToolComponent.displayName = 'ToolComponent';
 const Messages = ({ messages }: MessageListProps) => {
   if (messages.length === 0) {
     return <ChatBlankState />
