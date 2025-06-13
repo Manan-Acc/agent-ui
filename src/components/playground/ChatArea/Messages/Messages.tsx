@@ -60,7 +60,7 @@ const References: FC<ReferenceProps> = ({ references }) => (
 )
 
 const AgentMessageWrapper = ({ message }: MessageWrapperProps) => {
-  // console.log('AgentMessageWrapper', message.tool_calls)
+  console.log('AgentMessageWrapper', message.tool_calls)
   const [selectedToolIndex, setSelectedToolIndex] = useState<number | null>(null);
   useEffect(() => {
     setSelectedToolIndex(null);
@@ -191,7 +191,7 @@ const ToolComponent = memo(
       className="cursor-pointer rounded-md bg-accent px-2 py-1.5 text-xs"
       onClick={onClick}
     >
-      <p className="font-dmmono uppercase text-primary/80">{tools.tool_args.member_id}</p>
+      <p className="font-dmmono uppercase text-primary/80">{tools.tool_args.member_id ? tools.tool_args.member_id : tools.tool_name}</p>
     </div>
   )
 );

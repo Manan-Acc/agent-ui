@@ -20,7 +20,8 @@ import {
   TailwindTag,
   AgnoTag,
   ReasoningIcon,
-  ReferencesIcon
+  ReferencesIcon,
+  TelstraIcon
 } from './custom-icons'
 import { IconTypeMap } from './types'
 import {
@@ -46,6 +47,7 @@ export const ICONS: IconTypeMap = {
   gemini: GeminiLogo,
   aws: AwsLogo,
   azure: AzureLogo,
+  telstra: TelstraIcon,
   anthropic: AnthropicLogo,
   groq: GroqLogo,
   fireworks: FireworksLogo,

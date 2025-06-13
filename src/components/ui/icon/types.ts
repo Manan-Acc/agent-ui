@@ -36,6 +36,7 @@ export type IconType =
   | 'plus-icon'
   | 'references'
   | 'trash'
+  | 'telstra'
 
 export interface IconProps {
   type: IconType

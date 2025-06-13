@@ -1,4 +1,6 @@
 import { type FC } from 'react'
+import Image from 'next/image';
+import telstraLogo from '@/app/image.png';
 
 export const AgnoIcon: FC = ({ ...props }) => {
   return (
@@ -26,6 +28,30 @@ export const AgnoIcon: FC = ({ ...props }) => {
     </svg>
   )
 }
+
+// export const TelstraIcon: FC = ({ ...props }) => {
+//   return (
+//     <img
+//       src="../../../../app/image.png" // Replace with the actual path to your logo
+//       alt="Telstra Logo"
+//       width="16"
+//       height="16"
+//       {...props}
+//     />
+//   );
+// };
+
+
+export const TelstraIcon: FC = () => {
+  return (
+    <Image
+      src={telstraLogo}
+      alt="Telstra Logo"
+      width={16}
+      height={16}
+    />
+  );
+};
 
 export const UserIcon: FC = ({ ...props }) => {
   return (
