@@ -18,7 +18,7 @@ import { TeamSelector } from './TeamSelector'
 const ENDPOINT_PLACEHOLDER = 'NO ENDPOINT ADDED'
 const SidebarHeader = () => (
   <div className="flex items-center gap-2 flex-wrap">
-    <Icon type="telstra" size="xs" />
+    <Icon type="agno" size="xs" />
     <span className="text-xs font-medium uppercase text-white">Prastaav</span>
   </div>
 )

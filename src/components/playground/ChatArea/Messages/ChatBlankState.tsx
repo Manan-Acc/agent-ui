@@ -121,7 +121,7 @@ const ChatBlankState = () => {
               Prastaav
             </span>
           </div>
-          <p>Agentic AI Sales Team, built for <span className='text-blue-500'>Telstra</span></p>
+          <p>Agentic AI Sales Team, built for <span className='text-blue-500'>You</span></p>
           {/* <span className="inline-flex translate-y-[10px] items-center">
               <Link
                 href={EXTERNAL_LINKS.agno}
